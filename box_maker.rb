@@ -328,7 +328,6 @@ class BoxMaker
 
     case RbConfig::CONFIG['host_os']
     when /darwin/
-      # -n launches a new instance of the default browser
       system('open', '-n', preview)
     when /linux/
       browser = ENV['BROWSER']
@@ -343,8 +342,8 @@ class BoxMaker
         system('xdg-open', preview)
       end
     when /mswin|mingw|cygwin/
-      # start will open the file with the associated browser in a new window
       system('start', '', preview)
+
     else
       puts 'Unable to open browser on this platform'
     end
