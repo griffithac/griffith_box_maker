@@ -1,6 +1,15 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
+    childprocess (5.1.0)
+      logger (~> 1.5)
+    launchy (3.1.1)
+      addressable (~> 2.8)
+      childprocess (~> 5.0)
+      logger (~> 1.6)
+    logger (1.7.0)
     mini_portile2 (2.8.9)
     minitest (5.25.5)
     nokogiri (1.18.8)
@@ -10,6 +19,7 @@ GEM
       racc (~> 1.4)
     pastel (0.8.0)
       tty-color (~> 0.5)
+    public_suffix (6.0.2)
     racc (1.8.1)
     rake (13.3.0)
     svgcode (0.6.2)
@@ -34,6 +44,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  launchy (~> 3.1)
   minitest (~> 5.0)
   pastel (~> 0.8)
   rake (~> 13.0)

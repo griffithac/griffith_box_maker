@@ -223,17 +223,18 @@ class SVGGenerator
     path << [:move_to, x, y]
 
     # Bottom edge - odd fingers get slots (complements bottom panel)
+
     (0...layout_x[:count]).each do |i|
       finger_start, finger_width = get_finger_info(i, layout_x)
 
-      if i.odd?
-        # Odd finger - create slot
+      if i.even?
+        # Even finger - create slot
         path << [:line_to, finger_start, y]
         path << [:line_to, finger_start, y - @stock_thickness - @kerf]
         path << [:line_to, finger_start + finger_width, y - @stock_thickness - @kerf]
         path << [:line_to, finger_start + finger_width, y]
       else
-        # Even finger - straight line
+        # Odd finger - straight line
         path << [:line_to, finger_start + finger_width, y]
       end
     end
@@ -290,17 +291,18 @@ class SVGGenerator
     path << [:move_to, x, y]
 
     # Bottom edge - odd fingers get slots (complements bottom panel)
+
     (0...layout_y[:count]).each do |j|
       finger_start, finger_width = get_finger_info(j, layout_y)
 
-      if j.odd?
-        # Odd finger - create slot
+      if j.even?
+        # Even finger - create slot
         path << [:line_to, finger_start, y]
         path << [:line_to, finger_start, y - @stock_thickness - @kerf]
         path << [:line_to, finger_start + finger_width, y - @stock_thickness - @kerf]
         path << [:line_to, finger_start + finger_width, y]
       else
-        # Even finger - straight line
+        # Odd finger - straight line
         path << [:line_to, finger_start + finger_width, y]
       end
     end
@@ -453,9 +455,44 @@ class SVGGenerator
   end
 
   def should_add_dogbone(path, index)
-    # Simplified logic - in real implementation, this would detect inside corners
-    # For now, just add dogbones occasionally for demonstration
-    false  # Disable for now until proper corner detection is implemented
+    # Determine if the vertex at `index` forms an internal (concave) corner.
+    first_move = path.find { |cmd| cmd[0] == :move_to }
+    return false unless first_move
+    start_point = [first_move[1], first_move[2]]
+
+    # Helper to resolve a point from a command
+    get_point = lambda do |cmd|
+      case cmd[0]
+      when :move_to, :line_to
+        [cmd[1], cmd[2]]
+      when :close
+        start_point
+      else
+        nil
+      end
+    end
+
+    current = get_point.call(path[index])
+    return false unless current
+
+    # Find previous drawing command
+    prev_idx = index - 1
+    prev_idx -= 1 while prev_idx > 0 && path[prev_idx][0] == :close
+    previous = prev_idx >= 0 ? get_point.call(path[prev_idx]) : start_point
+
+    # Find next drawing command
+    next_idx = index + 1
+    next_idx += 1 while next_idx < path.length && path[next_idx][0] == :close
+    nxt = next_idx < path.length ? get_point.call(path[next_idx]) : start_point
+    return false unless previous && nxt
+
+    v1x = current[0] - previous[0]
+    v1y = current[1] - previous[1]
+    v2x = nxt[0] - current[0]
+    v2y = nxt[1] - current[1]
+
+    cross = v1x * v2y - v1y * v2x
+    cross < -0.001
   end
 
   def lid_length
