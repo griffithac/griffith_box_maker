@@ -173,13 +173,13 @@ class StockManager
       info = get_stock_info(stock_file[:filepath])
       if info
         description = "#{info[:material_type]} - #{info[:dimensions]} - #{info[:kerf]}mm kerf"
-        ["#{info[:name]} (#{description})", stock_file[:filepath]]
+        { name: "#{info[:name]} (#{description})", value: stock_file[:filepath] }
       else
-        [stock_file[:name], stock_file[:filepath]]
+        { name: stock_file[:name], value: stock_file[:filepath] }
       end
     end
 
-    choices << ["❌ Cancel", :cancel]
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select stock material:", choices, per_page: 15)
 
@@ -372,8 +372,8 @@ class StockManager
 
     puts @pastel.bold.cyan("\n📄 Duplicate Stock Material")
 
-    choices = stock_files.map { |s| [s[:name], s[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = stock_files.map { |s| { name: s[:name], value: s[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select stock to duplicate:", choices, per_page: 15)
     return if choice == :cancel
@@ -416,8 +416,8 @@ class StockManager
     puts @pastel.bold.red("\n🗑️ Delete Stock Material")
     puts @pastel.yellow("⚠️  This action cannot be undone!")
 
-    choices = stock_files.map { |s| [s[:name], s[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = stock_files.map { |s| { name: s[:name], value: s[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select stock to delete:", choices, per_page: 15)
     return if choice == :cancel
@@ -490,8 +490,8 @@ class StockManager
 
     puts @pastel.bold.cyan("\n📤 Export Stock Material")
 
-    choices = stock_files.map { |s| [s[:name], s[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = stock_files.map { |s| { name: s[:name], value: s[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select stock to export:", choices, per_page: 15)
     return if choice == :cancel
