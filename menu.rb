@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'tty-prompt'
+require_relative 'tty_prompt_key_select_patch'
 require 'pastel'
 require_relative 'project_manager'
 require_relative 'stock_manager'
