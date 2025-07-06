@@ -178,10 +178,10 @@ class ProjectManager
     choices = projects.map do |project|
       info = get_project_info(project[:filepath])
       description = info ? "#{info[:dimensions]} - #{info[:description]}" : "Unknown"
-      ["#{project[:name]} - #{description}", project[:filepath]]
+      { name: "#{project[:name]} - #{description}", value: project[:filepath] }
     end
 
-    choices << ["❌ Cancel", :cancel]
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select a project to load:", choices)
 
@@ -290,8 +290,8 @@ class ProjectManager
     puts @pastel.bold.red("\n🗑️ Delete Project")
     puts @pastel.yellow("⚠️  This action cannot be undone!")
 
-    choices = projects.map { |p| [p[:name], p[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = projects.map { |p| { name: p[:name], value: p[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select a project to delete:", choices)
 
@@ -330,8 +330,8 @@ class ProjectManager
 
     puts @pastel.bold.cyan("\n📄 Duplicate Project")
 
-    choices = projects.map { |p| [p[:name], p[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = projects.map { |p| { name: p[:name], value: p[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select a project to duplicate:", choices)
 
@@ -385,8 +385,8 @@ class ProjectManager
 
     puts @pastel.bold.cyan("\n📤 Export Project")
 
-    choices = projects.map { |p| [p[:name], p[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = projects.map { |p| { name: p[:name], value: p[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select a project to export:", choices)
 
@@ -581,13 +581,13 @@ class ProjectManager
         stock_data = JSON.parse(File.read(filepath), symbolize_names: true)
         props = stock_data[:properties]
         description = "#{stock_data[:material_type]} - #{props[:width]}×#{props[:height]}×#{props[:thickness]}mm"
-        [stock_data[:name], filepath]
+        { name: stock_data[:name], value: filepath }
       rescue
-        [File.basename(filepath, '.json'), filepath]
+        { name: File.basename(filepath, '.json'), value: filepath }
       end
     end
 
-    choices << ["❌ Cancel", :cancel]
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select stock material:", choices)
     return if choice == :cancel
@@ -624,13 +624,13 @@ class ProjectManager
         tool_data = JSON.parse(File.read(filepath), symbolize_names: true)
         props = tool_data[:properties]
         description = "#{tool_data[:tool_type]} - #{props[:diameter]}mm #{tool_data[:material]}"
-        [tool_data[:name], filepath]
+        { name: tool_data[:name], value: filepath }
       rescue
-        [File.basename(filepath, '.json'), filepath]
+        { name: File.basename(filepath, '.json'), value: filepath }
       end
     end
 
-    choices << ["❌ Cancel", :cancel]
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select cutting tool:", choices)
     return if choice == :cancel

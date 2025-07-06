@@ -183,13 +183,13 @@ class ToolManager
       info = get_tool_info(tool_file[:filepath])
       if info
         description = "#{info[:tool_type]} - #{info[:diameter]}mm - #{info[:material]}"
-        ["#{info[:name]} (#{description})", tool_file[:filepath]]
+        { name: "#{info[:name]} (#{description})", value: tool_file[:filepath] }
       else
-        [tool_file[:name], tool_file[:filepath]]
+        { name: tool_file[:name], value: tool_file[:filepath] }
       end
     end
 
-    choices << ["❌ Cancel", :cancel]
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select cutting tool:", choices, per_page: 15)
 
@@ -429,8 +429,8 @@ class ToolManager
 
     puts @pastel.bold.cyan("\n📄 Duplicate Cutting Tool")
 
-    choices = tool_files.map { |t| [t[:name], t[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = tool_files.map { |t| { name: t[:name], value: t[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select tool to duplicate:", choices, per_page: 15)
     return if choice == :cancel
@@ -473,8 +473,8 @@ class ToolManager
     puts @pastel.bold.red("\n🗑️ Delete Cutting Tool")
     puts @pastel.yellow("⚠️  This action cannot be undone!")
 
-    choices = tool_files.map { |t| [t[:name], t[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = tool_files.map { |t| { name: t[:name], value: t[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select tool to delete:", choices, per_page: 15)
     return if choice == :cancel
@@ -547,8 +547,8 @@ class ToolManager
 
     puts @pastel.bold.cyan("\n📤 Export Cutting Tool")
 
-    choices = tool_files.map { |t| [t[:name], t[:filepath]] }
-    choices << ["❌ Cancel", :cancel]
+    choices = tool_files.map { |t| { name: t[:name], value: t[:filepath] } }
+    choices << { name: "❌ Cancel", value: :cancel }
 
     choice = @prompt.select("Select tool to export:", choices, per_page: 15)
     return if choice == :cancel
