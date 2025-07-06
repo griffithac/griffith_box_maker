@@ -43,3 +43,11 @@ Example SVG output is included in the [`output/`](output/) folder such as the cu
 - [cutting_layout_sheet_1.svg](output/cutting_layout_sheet_1.svg)
 
 More examples can be generated using the steps above.
+
+# box_maker
+# griffith_box_maker
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
