@@ -137,21 +137,16 @@ class SVGGenerator
     path << [:move_to, x, y]
 
     # Bottom edge with fingers (X direction)
-    # Even indices get slots (cut inward), odd indices are solid (straight)
+    # Even indices create outward fingers, odd indices remain flush
     (0...layout_x[:count]).each do |i|
       finger_start, finger_width = get_finger_info(i, layout_x)
 
       if i.even?
-        # Even finger - create slot (cut inward)
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        # Move to slot start
-        path << [:line_to, slot_start, y]
-        # Cut slot
-        path << [:line_to, slot_start, y + @stock_thickness + @kerf]
-        path << [:line_to, slot_end, y + @stock_thickness + @kerf]
-        path << [:line_to, slot_end, y]
+        # Even finger - create outward tab
+        path << [:line_to, finger_start, y]
+        path << [:line_to, finger_start, y - @stock_thickness - @kerf]
+        path << [:line_to, finger_start + finger_width, y - @stock_thickness - @kerf]
+        path << [:line_to, finger_start + finger_width, y]
       else
         # Odd finger - straight line
         path << [:line_to, finger_start + finger_width, y]
@@ -164,14 +159,11 @@ class SVGGenerator
       finger_start, finger_width = get_finger_info(j, layout_y)
 
       if j.even?
-        # Even finger - create slot
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, x, slot_start]
-        path << [:line_to, x - @stock_thickness - @kerf, slot_start]
-        path << [:line_to, x - @stock_thickness - @kerf, slot_end]
-        path << [:line_to, x, slot_end]
+        # Even finger - create outward tab
+        path << [:line_to, x, finger_start]
+        path << [:line_to, x + @stock_thickness + @kerf, finger_start]
+        path << [:line_to, x + @stock_thickness + @kerf, finger_start + finger_width]
+        path << [:line_to, x, finger_start + finger_width]
       else
         # Odd finger - straight line
         path << [:line_to, x, finger_start + finger_width]
@@ -184,14 +176,11 @@ class SVGGenerator
       finger_start, finger_width = get_finger_info(i, layout_x)
 
       if i.even?
-        # Even finger - create slot
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, slot_end, y]
-        path << [:line_to, slot_end, y - @stock_thickness - @kerf]
-        path << [:line_to, slot_start, y - @stock_thickness - @kerf]
-        path << [:line_to, slot_start, y]
+        # Even finger - create outward tab
+        path << [:line_to, finger_end, y]
+        path << [:line_to, finger_end, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start, y]
       else
         # Odd finger - straight line
         path << [:line_to, finger_start, y]
@@ -204,14 +193,11 @@ class SVGGenerator
       finger_start, finger_width = get_finger_info(j, layout_y)
 
       if j.even?
-        # Even finger - create slot
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, x, slot_end]
-        path << [:line_to, x + @stock_thickness + @kerf, slot_end]
-        path << [:line_to, x + @stock_thickness + @kerf, slot_start]
-        path << [:line_to, x, slot_start]
+        # Even finger - create outward tab
+        path << [:line_to, x, finger_end]
+        path << [:line_to, x - @stock_thickness - @kerf, finger_end]
+        path << [:line_to, x - @stock_thickness - @kerf, finger_start]
+        path << [:line_to, x, finger_start]
       else
         # Odd finger - straight line
         path << [:line_to, x, finger_start]
@@ -232,40 +218,34 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - odd indices cut slots to receive bottom panel fingers
+    # Bottom edge - even indices cut slots to receive bottom panel fingers
     (0...layout_x[:count]).each do |i|
       finger_start, finger_width = get_finger_info(i, layout_x)
 
-      if i.odd?
-        # Odd index - create slot going into the panel
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
+      if i.even?
+        # Even index - create slot going into the panel
         path << [:line_to, slot_start, y]
         path << [:line_to, slot_start, y + @stock_thickness + @kerf]
         path << [:line_to, slot_end, y + @stock_thickness + @kerf]
         path << [:line_to, slot_end, y]
       else
-        # Even index - straight line
+        # Odd index - straight line
 
         path << [:line_to, finger_start + finger_width, y]
       end
     end
 
-    # Right edge - odd fingers get slots for vertical connections
+    # Right edge - odd fingers become outward tabs for vertical connections
     x = width
     (0...layout_z[:count]).each do |k|
       finger_start, finger_width = get_finger_info(k, layout_z)
 
       if k.odd?
-        # Odd finger - create slot
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, x, slot_start]
-        path << [:line_to, x - @stock_thickness - @kerf, slot_start]
-        path << [:line_to, x - @stock_thickness - @kerf, slot_end]
-        path << [:line_to, x, slot_end]
+        # Odd finger - create outward tab
+        path << [:line_to, x, finger_start]
+        path << [:line_to, x + @stock_thickness + @kerf, finger_start]
+        path << [:line_to, x + @stock_thickness + @kerf, finger_start + finger_width]
+        path << [:line_to, x, finger_start + finger_width]
       else
         # Even finger - straight line
         path << [:line_to, x, finger_start + finger_width]
@@ -275,20 +255,17 @@ class SVGGenerator
     # Top edge - straight
     path << [:line_to, 0, height]
 
-    # Left edge - odd fingers get slots for vertical connections
+    # Left edge - odd fingers become outward tabs for vertical connections
     x = 0
     (layout_z[:count]-1).downto(0) do |k|
       finger_start, finger_width = get_finger_info(k, layout_z)
 
       if k.odd?
-        # Odd finger - create slot
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, x, slot_end]
-        path << [:line_to, x + @stock_thickness + @kerf, slot_end]
-        path << [:line_to, x + @stock_thickness + @kerf, slot_start]
-        path << [:line_to, x, slot_start]
+        # Odd finger - create outward tab
+        path << [:line_to, x, finger_end]
+        path << [:line_to, x - @stock_thickness - @kerf, finger_end]
+        path << [:line_to, x - @stock_thickness - @kerf, finger_start]
+        path << [:line_to, x, finger_start]
       else
         # Even finger - straight line
         path << [:line_to, x, finger_start]
@@ -308,19 +285,16 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - odd indices cut slots to receive bottom panel fingers
+    # Bottom edge - even indices cut slots to receive bottom panel fingers
     (0...layout_y[:count]).each do |j|
       finger_start, finger_width = get_finger_info(j, layout_y)
 
-      if j.odd?
-        # Odd index - create slot going into the panel
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, slot_start, y]
-        path << [:line_to, slot_start, y + @stock_thickness + @kerf]
-        path << [:line_to, slot_end, y + @stock_thickness + @kerf]
-        path << [:line_to, slot_end, y]
+      if j.even?
+        # Even index - create slot going into the panel
+        path << [:line_to, finger_start, y]
+        path << [:line_to, finger_start, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start + finger_width, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start + finger_width, y]
       else
         # Even index - straight line
 
@@ -328,20 +302,17 @@ class SVGGenerator
       end
     end
 
-    # Right edge - even fingers get slots for vertical connections
+    # Right edge - odd fingers get slots for vertical connections
     x = width
     (0...layout_z[:count]).each do |k|
       finger_start, finger_width = get_finger_info(k, layout_z)
 
-      if k.even?
-        # Even finger - create slot
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, x, slot_start]
-        path << [:line_to, x - @stock_thickness - @kerf, slot_start]
-        path << [:line_to, x - @stock_thickness - @kerf, slot_end]
-        path << [:line_to, x, slot_end]
+      if k.odd?
+        # Odd finger - create slot
+        path << [:line_to, x, finger_start]
+        path << [:line_to, x - @stock_thickness - @kerf, finger_start]
+        path << [:line_to, x - @stock_thickness - @kerf, finger_start + finger_width]
+        path << [:line_to, x, finger_start + finger_width]
       else
         # Odd finger - straight line
         path << [:line_to, x, finger_start + finger_width]
@@ -351,20 +322,17 @@ class SVGGenerator
     # Top edge - straight
     path << [:line_to, 0, height]
 
-    # Left edge - even fingers get slots for vertical connections
+    # Left edge - odd fingers get slots for vertical connections
     x = 0
     (layout_z[:count]-1).downto(0) do |k|
       finger_start, finger_width = get_finger_info(k, layout_z)
 
-      if k.even?
-        # Even finger - create slot
-        slot_start = finger_start - @kerf / 2.0
-        slot_end   = finger_start + finger_width + @kerf / 2.0
-
-        path << [:line_to, x, slot_end]
-        path << [:line_to, x + @stock_thickness + @kerf, slot_end]
-        path << [:line_to, x + @stock_thickness + @kerf, slot_start]
-        path << [:line_to, x, slot_start]
+      if k.odd?
+        # Odd finger - create slot
+        path << [:line_to, x, finger_end]
+        path << [:line_to, x + @stock_thickness + @kerf, finger_end]
+        path << [:line_to, x + @stock_thickness + @kerf, finger_start]
+        path << [:line_to, x, finger_start]
       else
         # Odd finger - straight line
         path << [:line_to, x, finger_start]
@@ -378,8 +346,6 @@ class SVGGenerator
   def generate_lid_top_path(width, height)
     # Similar to box bottom but with lid layouts
     path = []
-    layout_x = @layouts[:lid_x]
-    layout_y = @layouts[:lid_y]
 
     # Start at bottom-left corner
     x, y = 0, 0
