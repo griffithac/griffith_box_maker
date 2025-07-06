@@ -222,19 +222,20 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - odd fingers get slots (complements bottom panel)
-
+    # Bottom edge - odd indices cut slots to receive bottom panel fingers
     (0...layout_x[:count]).each do |i|
       finger_start, finger_width = get_finger_info(i, layout_x)
 
-      if i.even?
-        # Even finger - create slot
+      if i.odd?
+        # Odd index - create slot going into the panel
+
         path << [:line_to, finger_start, y]
-        path << [:line_to, finger_start, y - @stock_thickness - @kerf]
-        path << [:line_to, finger_start + finger_width, y - @stock_thickness - @kerf]
+        path << [:line_to, finger_start, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start + finger_width, y + @stock_thickness + @kerf]
         path << [:line_to, finger_start + finger_width, y]
       else
-        # Odd finger - straight line
+        # Even index - straight line
+
         path << [:line_to, finger_start + finger_width, y]
       end
     end
@@ -290,19 +291,19 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - odd fingers get slots (complements bottom panel)
-
+    # Bottom edge - odd indices cut slots to receive bottom panel fingers
     (0...layout_y[:count]).each do |j|
       finger_start, finger_width = get_finger_info(j, layout_y)
 
-      if j.even?
-        # Even finger - create slot
+      if j.odd?
+        # Odd index - create slot going into the panel
         path << [:line_to, finger_start, y]
-        path << [:line_to, finger_start, y - @stock_thickness - @kerf]
-        path << [:line_to, finger_start + finger_width, y - @stock_thickness - @kerf]
+        path << [:line_to, finger_start, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start + finger_width, y + @stock_thickness + @kerf]
         path << [:line_to, finger_start + finger_width, y]
       else
-        # Odd finger - straight line
+        # Even index - straight line
+
         path << [:line_to, finger_start + finger_width, y]
       end
     end
