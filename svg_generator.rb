@@ -389,9 +389,18 @@ class SVGGenerator
   end
 
   def get_finger_info(index, layout)
-    uniform_width = layout[:span] / layout[:count]
-    start_pos = index * uniform_width
-    [start_pos, uniform_width]
+    width = layout[:width]
+    # Calculate start position based on uniform width.  For the last finger,
+    # force the end position to align exactly with the span to avoid small
+    # floating point drift which can create diagonal artifacts at the
+    # corners when the path is closed.
+    if index == layout[:count] - 1
+      start_pos = layout[:span] - width
+    else
+      start_pos = index * width
+    end
+
+    [start_pos.round(4), width.round(4)]
   end
 
   def draw_cutting_path(img, path, margin)
