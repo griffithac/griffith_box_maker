@@ -14,3 +14,5 @@ end
 
 # Ruby version requirement
 ruby ">= 2.7.0"
+
+gem "launchy", "~> 3.1"

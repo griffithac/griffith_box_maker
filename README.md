@@ -47,7 +47,12 @@ More examples can be generated using the steps above.
 # box_maker
 # griffith_box_maker
 
+## Dependencies
+
+Run `bundle install` to install required gems. The application relies on
+`victor`, `tty-prompt`, `pastel`, `svgcode`, and now `launchy` for opening
+generated previews.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
