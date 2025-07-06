@@ -40,7 +40,7 @@ class FingerJointCalculator
     base_count = rough_count.odd? ? rough_count : [1, rough_count - 1].max
 
     # Calculate uniform width for symmetry
-    uniform_width = span / base_count
+    uniform_width = span.to_f / base_count
 
     # Check if uniform width is acceptable (within 20% of target)
     width_acceptable = (uniform_width - finger_width).abs <= finger_width * 0.2
@@ -53,7 +53,7 @@ class FingerJointCalculator
                     base_count
                   end
 
-    final_width = span / final_count
+    final_width = span.to_f / final_count
 
     {
       count: final_count,
