@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+require_relative 'finger_joint_calculator'
+require_relative 'svg_generator'
+
 class LayoutOptimizer
   def initialize(options)
     @options = options
@@ -237,6 +240,10 @@ class LayoutOptimizer
     filename = File.join(output_dir, "cutting_layout_sheet_#{sheet[:number]}.svg")
     margin = 20
 
+    calculator = FingerJointCalculator.new(@options)
+    layouts = calculator.calculate_all_layouts
+    generator = SVGGenerator.new(@options, layouts)
+
     img = Victor::SVG.new width: @stock_width + 2 * margin, height: @stock_height + 2 * margin
 
     # Draw background
@@ -272,6 +279,36 @@ class LayoutOptimizer
              fill: panel_color,
              stroke: "#1976d2",
              stroke_width: 2.0
+
+      # Draw finger joints on the panel
+      begin
+        base_name = panel[:name].sub(/_\d+$/, '')
+
+        original_width  = panel[:rotated] ? panel[:height] : panel[:width]
+        original_height = panel[:rotated] ? panel[:width]  : panel[:height]
+
+        cutting_path = generator.send(:generate_cutting_path, base_name, original_width, original_height)
+
+        svg_path = ""
+        cutting_path.each do |cmd|
+          case cmd[0]
+          when :move_to, :line_to
+            x, y = cmd[1], cmd[2]
+            if panel[:rotated]
+              x, y = y, original_width - x
+            end
+            x += panel[:x] + margin
+            y += panel[:y] + margin
+            svg_path += (cmd[0] == :move_to ? "M" : "L") + " #{x.round(3)} #{y.round(3)} "
+          when :close
+            svg_path += "Z "
+          end
+        end
+
+        img.path d: svg_path.strip, fill: 'none', stroke: 'black', 'stroke-width' => '0.5'
+      rescue => e
+        warn "Failed to draw fingers for #{panel[:name]}: #{e.message}"
+      end
 
       # Panel label
       label_x = panel[:x] + panel[:width] / 2 + margin
