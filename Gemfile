@@ -5,7 +5,7 @@ source "https://rubygems.org"
 gem "victor", "~> 0.3"
 gem "tty-prompt", "~> 0.23"
 gem "pastel", "~> 0.8"
-gem "gcodify", "~> 1.0"
+gem "svgcode", "~> 0.6"
 
 group :development do
   gem "rake", "~> 13.0"

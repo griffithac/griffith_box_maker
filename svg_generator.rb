@@ -78,6 +78,9 @@ class SVGGenerator
     filename
   end
 
+  # Backwards compatibility for tests expecting `generate_panel_by_type`
+  alias generate_panel_by_type generate_panel
+
   def get_panel_dimensions(panel_type)
     case panel_type
     when "box_bottom"

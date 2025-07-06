@@ -21,7 +21,7 @@ class BoxMaker
   VERSION = "1.0.0"
 
   # Default parameters from OpenSCAD file
-  DEFAULT_OPTIONS = {
+    DEFAULT_OPTIONS = {
     box_length: 278,
     box_width: 498,
     box_height: 73,
@@ -41,7 +41,8 @@ class BoxMaker
     enable_y_divider: true,
     output_dir: "./output",
     open_viewer: true,
-    interactive: false
+    interactive: false,
+    generate_gcode: false
   }.freeze
 
   def initialize
@@ -147,11 +148,22 @@ class BoxMaker
     generator = SVGGenerator.new(@options, layouts)
     files = generator.generate_all_panels
 
+    # Convert SVG files to G-code if requested
+    gcode_files = []
+    if @options[:generate_gcode]
+      puts "\n🛠️  Converting SVG files to G-code..."
+      gcode_files = files.map { |f| convert_svg_to_gcode(f) }.compact
+    end
+
     puts "\n✅ Generated files:"
     puts "  📋 Sheet Layouts:"
     layout_files.each { |file| puts "    📄 #{File.basename(file)}" }
     puts "  🔧 Individual Panels:"
     files.each { |file| puts "    📄 #{File.basename(file)}" }
+    unless gcode_files.empty?
+      puts "  🛠️  G-code Files:"
+      gcode_files.each { |f| puts "    💾 #{File.basename(f)}" }
+    end
 
     # Open with system viewer if requested (prioritize sheet layout)
     if @options[:open_viewer]
@@ -283,6 +295,7 @@ class BoxMaker
       opts.on("-o", "--output DIR", "Output directory") { |v| @options[:output_dir] = v }
       opts.on("--[no-]open", "Open with system viewer") { |v| @options[:open_viewer] = v }
       opts.on("-s", "--spacing SPACING", Float, "Part spacing (mm)") { |v| @options[:part_spacing] = v }
+      opts.on("--[no-]gcode", "Generate G-code from SVG files") { |v| @options[:generate_gcode] = v }
 
       opts.separator ""
       opts.on("--help", "Show this help") do
@@ -299,14 +312,28 @@ class BoxMaker
 
   def open_with_viewer(file)
     case RbConfig::CONFIG['host_os']
-    when /darwin/
-      system("open", file)
-    when /linux/
-      system("xdg-open", file)
-    when /mswin|mingw|cygwin/
-      system("start", file)
-    else
-      puts "Unable to open viewer on this platform"
+      when /darwin/
+        system("open", file)
+      when /linux/
+        system("xdg-open", file)
+      when /mswin|mingw|cygwin/
+        system("start", file)
+      else
+        puts "Unable to open viewer on this platform"
+    end
+  end
+
+  def convert_svg_to_gcode(svg_file)
+    require 'svgcode'
+    out_file = svg_file.sub(/\.svg\z/i, '.ngc')
+    begin
+      svg_str = File.read(svg_file)
+      gcode = Svgcode.parse(svg_str)
+      File.write(out_file, gcode)
+      out_file
+    rescue => e
+      puts "❌ Error converting #{File.basename(svg_file)}: #{e.message}"
+      nil
     end
   end
 end
