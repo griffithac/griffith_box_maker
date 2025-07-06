@@ -1,0 +1,7 @@
+# Ignore bundler plugins and vendor directories
+.bundle/
+vendor/
+*.gem
+
+# Ignore output directory
+output/
