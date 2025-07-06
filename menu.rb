@@ -48,9 +48,9 @@ class MenuSystem
         menu.choice "🤝 (J)oints - Finger width, dogbones", :joints, key: 'j'
         menu.choice "🎯 (F)eatures - Lid and dividers", :features, key: 'f'
         menu.choice "📁 (O)utput - Directory and viewer", :output, key: 'o'
-        menu.choice "📋 (P)resets - Load common configurations", :presets, key: 'p'
+        menu.choice "📋 (C)onfigurations - Load common setups", :configurations, key: 'c'
         menu.choice "📐 (L)ayout - Preview stock layout", :layout_preview, key: 'l'
-        menu.choice "💼 (R)ojects - Project management", :projects, key: 'r'
+        menu.choice "💼 (P)rojects - Project management", :projects, key: 'p'
         menu.choice "🚀 (G)enerate - Create SVG files", :generate, key: 'g'
         menu.choice "💾 (S)ave - Save current config", :save, key: 's'
         menu.choice "❌ (Q)uit", :exit, key: 'q'
@@ -69,8 +69,8 @@ class MenuSystem
         configure_features
       when :output
         configure_output
-      when :presets
-        load_preset
+      when :configurations
+        load_configuration
       when :layout_preview
         preview_layout
       when :projects
@@ -286,10 +286,10 @@ class MenuSystem
     clear_screen
   end
 
-  def load_preset
-    puts @pastel.bold.blue("\n📋 Preset Configurations")
+  def load_configuration
+    puts @pastel.bold.blue("\n📋 Common Configurations")
 
-    presets = {
+    configurations = {
       "Small Parts Organizer" => {
         box_length: 150, box_width: 100, box_height: 50,
         finger_width: 20, enable_lid: false
@@ -316,7 +316,7 @@ class MenuSystem
       }
     }
 
-    choice = @prompt.select("Select a preset:", per_page: 15) do |menu|
+    choice = @prompt.select("Select a configuration:", per_page: 15) do |menu|
       menu.choice "(S)mall Parts Organizer - 150×100×50mm, no lid", "Small Parts Organizer", key: 's'
       menu.choice "(T)ool Box - 300×200×100mm, with lid", "Tool Box", key: 't'
       menu.choice "(E)lectronics Enclosure - 120×80×40mm, 3mm material", "Electronics Enclosure", key: 'e'
@@ -328,11 +328,11 @@ class MenuSystem
 
     return if choice == :cancel
 
-    # Apply preset
-    preset = presets[choice]
-    preset.each { |key, value| @options[key] = value }
+    # Apply configuration
+    configuration = configurations[choice]
+    configuration.each { |key, value| @options[key] = value }
 
-    puts @pastel.green("✅ Applied preset: #{choice}")
+    puts @pastel.green("✅ Applied configuration: #{choice}")
     @prompt.keypress("Press any key to continue...")
     clear_screen
   end
@@ -404,7 +404,7 @@ class MenuSystem
         menu.choice "📏 (W)idth: #{@options[:stock_width]}mm", :width, key: "w"
         menu.choice "📏 (H)eight: #{@options[:stock_height]}mm", :height, key: "h"
         menu.choice "📏 (T)hickness: #{@options[:stock_thickness]}mm", :thickness, key: "t"
-        menu.choice "📋 (P)resets - Common stock sizes", :presets, key: "p"
+        menu.choice "📋 (C)onfigurations - Common stock sizes", :stock_configurations, key: "c"
         menu.choice "🔄 (A)ll dimensions", :all, key: "a"
         menu.choice "🔙 (R)eturn to Material Menu", :return, key: "r"
       end
@@ -416,8 +416,8 @@ class MenuSystem
         @options[:stock_height] = @prompt.ask("Stock Sheet Height (mm):", default: @options[:stock_height]) { |q| q.convert :float }
       when :thickness
         @options[:stock_thickness] = @prompt.ask("Stock Thickness (mm):", default: @options[:stock_thickness]) { |q| q.convert :float }
-      when :presets
-        configure_stock_presets
+      when :stock_configurations
+        configure_stock_configurations
       when :all
         @options[:stock_width] = @prompt.ask("Stock Sheet Width (mm):", default: @options[:stock_width]) { |q| q.convert :float }
         @options[:stock_height] = @prompt.ask("Stock Sheet Height (mm):", default: @options[:stock_height]) { |q| q.convert :float }
@@ -429,10 +429,10 @@ class MenuSystem
       puts @pastel.green("✅ Stock dimensions updated!")
     end
 
-    def configure_stock_presets
+    def configure_stock_configurations
       puts @pastel.bold.blue("\n📋 Common Stock Sizes")
 
-      presets = {
+      configurations = {
         "4x8 Plywood (1220×2440mm)" => { stock_width: 1220, stock_height: 2440, stock_thickness: 12 },
         "4x4 Plywood (1220×1220mm)" => { stock_width: 1220, stock_height: 1220, stock_thickness: 12 },
         "3x3 MDF (900×900mm)" => { stock_width: 900, stock_height: 900, stock_thickness: 6 },
@@ -441,7 +441,7 @@ class MenuSystem
         "A4 Size (210×297mm)" => { stock_width: 210, stock_height: 297, stock_thickness: 3 }
       }
 
-      choice = @prompt.select("Select a stock size preset:") do |menu|
+      choice = @prompt.select("Select a stock size configuration:") do |menu|
         menu.choice "🏠 (1) 4x8 Plywood - 1220×2440×12mm", "4x8 Plywood (1220×2440mm)", key: "1"
         menu.choice "📦 (2) 4x4 Plywood - 1220×1220×12mm", "4x4 Plywood (1220×1220mm)", key: "2"
         menu.choice "🔧 (3) 3x3 MDF - 900×900×6mm", "3x3 MDF (900×900mm)", key: "3"
@@ -453,12 +453,12 @@ class MenuSystem
 
       return if choice == :cancel
 
-      preset = presets[choice]
-      @options[:stock_width] = preset[:stock_width]
-      @options[:stock_height] = preset[:stock_height]
-      @options[:stock_thickness] = preset[:stock_thickness]
+      configuration = configurations[choice]
+      @options[:stock_width] = configuration[:stock_width]
+      @options[:stock_height] = configuration[:stock_height]
+      @options[:stock_thickness] = configuration[:stock_thickness]
 
-      puts @pastel.green("✅ Applied stock preset: #{choice}")
+      puts @pastel.green("✅ Applied stock configuration: #{choice}")
     end
   end
 
