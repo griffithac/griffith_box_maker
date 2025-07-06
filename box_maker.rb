@@ -6,7 +6,7 @@ require 'rbconfig'
 
 # Load separate component files
 require_relative 'finger_joint_calculator'
-require_relative 'svg_generator_new'
+require_relative 'svg_generator'
 require_relative 'layout_optimizer'
 require_relative 'project_manager'
 
@@ -144,7 +144,7 @@ class BoxMaker
 
     # Now generate individual panel files
     puts "\n📝 Generating individual panel SVG files..."
-    generator = SVGGeneratorNew.new(@options, layouts)
+    generator = SVGGenerator.new(@options, layouts)
     files = generator.generate_all_panels
 
     puts "\n✅ Generated files:"
