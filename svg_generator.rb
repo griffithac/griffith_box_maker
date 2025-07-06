@@ -222,7 +222,8 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - even fingers get slots (same pattern as bottom panel)
+    # Bottom edge - odd fingers get slots (complements bottom panel)
+
     (0...layout_x[:count]).each do |i|
       finger_start, finger_width = get_finger_info(i, layout_x)
 
@@ -289,7 +290,8 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - even fingers get slots (same pattern as bottom panel)
+    # Bottom edge - odd fingers get slots (complements bottom panel)
+
     (0...layout_y[:count]).each do |j|
       finger_start, finger_width = get_finger_info(j, layout_y)
 
