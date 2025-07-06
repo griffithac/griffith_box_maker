@@ -326,21 +326,8 @@ class BoxMaker
     HTML
     File.write(preview, html)
 
-    case RbConfig::CONFIG['host_os']
-    when /darwin/
-      system('open', preview)
-    when /linux/
-      browser = ENV['BROWSER']
-      if browser && !browser.empty?
-        system(browser, preview)
-      else
-        system('xdg-open', preview)
-      end
-    when /mswin|mingw|cygwin/
-      system('start', preview)
-    else
-      puts 'Unable to open browser on this platform'
-    end
+    require 'launchy'
+    Launchy.open(preview)
   end
 
   def convert_svg_to_gcode(svg_file)
