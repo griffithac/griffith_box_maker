@@ -1,0 +1,104 @@
+<svg width="1260" height="1260" xmlns="http://www.w3.org/2000/svg">
+
+<rect x="0" y="0" width="1260" height="1260" fill="#f8f9fa" stroke="none"/>
+<line x1="20" y1="20" x2="20" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="120" y1="20" x2="120" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="220" y1="20" x2="220" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="320" y1="20" x2="320" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="420" y1="20" x2="420" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="520" y1="20" x2="520" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="620" y1="20" x2="620" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="720" y1="20" x2="720" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="820" y1="20" x2="820" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="920" y1="20" x2="920" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="1020" y1="20" x2="1020" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="1120" y1="20" x2="1120" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="1220" y1="20" x2="1220" y2="1240" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="20" x2="1240" y2="20" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="120" x2="1240" y2="120" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="220" x2="1240" y2="220" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="320" x2="1240" y2="320" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="420" x2="1240" y2="420" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="520" x2="1240" y2="520" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="620" x2="1240" y2="620" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="720" x2="1240" y2="720" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="820" x2="1240" y2="820" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="920" x2="1240" y2="920" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="1020" x2="1240" y2="1020" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="1120" x2="1240" y2="1120" stroke="#e9ecef" stroke-width="0.5"/>
+<line x1="20" y1="1220" x2="1240" y2="1220" stroke="#e9ecef" stroke-width="0.5"/>
+<rect x="20" y="20" width="1220" height="1220" fill="white" stroke="black" stroke-width="3.0"/>
+<rect x="30" y="30" width="278" height="498" fill="#e3f2fd" stroke="#1976d2" stroke-width="2.0"/>
+<text x="169" y="279" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#1976d2">
+box_bottom
+</text>
+<text x="169" y="294" text-anchor="middle" font-family="Arial" font-size="10" fill="#424242">
+278×498mm
+</text>
+<text x="35" y="45" font-family="Arial" font-size="10" font-weight="bold" fill="white">
+1
+</text>
+<rect x="330" y="30" width="498" height="73" fill="#f3e5f5" stroke="#1976d2" stroke-width="2.0"/>
+<text x="579" y="66" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#1976d2">
+box_left
+</text>
+<text x="579" y="81" text-anchor="middle" font-family="Arial" font-size="10" fill="#424242">
+498×73mm
+</text>
+<text x="335" y="45" font-family="Arial" font-size="10" font-weight="bold" fill="white">
+2
+</text>
+<rect x="330" y="130" width="498" height="73" fill="#e3f2fd" stroke="#1976d2" stroke-width="2.0"/>
+<text x="579" y="166" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#1976d2">
+box_right
+</text>
+<text x="579" y="181" text-anchor="middle" font-family="Arial" font-size="10" fill="#424242">
+498×73mm
+</text>
+<text x="335" y="145" font-family="Arial" font-size="10" font-weight="bold" fill="white">
+3
+</text>
+<rect x="850" y="30" width="278" height="73" fill="#f3e5f5" stroke="#1976d2" stroke-width="2.0"/>
+<text x="989" y="66" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#1976d2">
+box_front
+</text>
+<text x="989" y="81" text-anchor="middle" font-family="Arial" font-size="10" fill="#424242">
+278×73mm
+</text>
+<text x="855" y="45" font-family="Arial" font-size="10" font-weight="bold" fill="white">
+4
+</text>
+<rect x="850" y="130" width="278" height="73" fill="#e3f2fd" stroke="#1976d2" stroke-width="2.0"/>
+<text x="989" y="166" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold" fill="#1976d2">
+box_back
+</text>
+<text x="989" y="181" text-anchor="middle" font-family="Arial" font-size="10" fill="#424242">
+278×73mm
+</text>
+<text x="855" y="145" font-family="Arial" font-size="10" font-weight="bold" fill="white">
+5
+</text>
+<text x="630" y="15" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="black">
+CUTTING LAYOUT - Sheet 1
+</text>
+<text x="30" y="1255" font-family="Arial" font-size="12" fill="black">
+Stock: 1220×1220mm
+</text>
+<text x="30" y="1270" font-family="Arial" font-size="12" fill="black">
+Efficiency: 16.91%
+</text>
+<text x="30" y="1285" font-family="Arial" font-size="12" fill="black">
+Parts: 5
+</text>
+<text x="1040" y="1255" font-family="Arial" font-size="12" font-weight="bold" fill="black">
+Legend:
+</text>
+<rect x="1040" y="1260" width="15" height="10" fill="#e3f2fd" stroke="#1976d2" stroke-width="1.0"/>
+<text x="1060" y="1267" font-family="Arial" font-size="10" fill="black">
+Even panels
+</text>
+<rect x="1040" y="1275" width="15" height="10" fill="#f3e5f5" stroke="#1976d2" stroke-width="1.0"/>
+<text x="1060" y="1282" font-family="Arial" font-size="10" fill="black">
+Odd panels
+</text>
+</svg>

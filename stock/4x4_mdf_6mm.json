@@ -1,0 +1,17 @@
+{
+  "name": "4x4 MDF 6mm",
+  "material_type": "mdf",
+  "supplier": null,
+  "created_at": "2025-07-05T23:05:46-07:00",
+  "updated_at": "2025-07-05T23:05:46-07:00",
+  "properties": {
+    "width": 1220,
+    "height": 1220,
+    "thickness": 6,
+    "kerf": 0.3,
+    "recommended_bit_diameter": 3.175,
+    "cost_per_sheet": 25.0,
+    "cost_per_sqm": 16.8
+  },
+  "notes": "Default stock material"
+}

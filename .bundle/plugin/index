@@ -1,0 +1,11 @@
+---
+commands:
+hooks:
+  before-install-all:
+  - "rubygems-requirements-system"
+load_paths:
+  rubygems-requirements-system:
+  - "/home/andrewg/src/box_maker/.bundle/plugin/gems/rubygems-requirements-system-0.1.1/lib"
+plugin_paths:
+  rubygems-requirements-system: "/home/andrewg/src/box_maker/.bundle/plugin/gems/rubygems-requirements-system-0.1.1"
+sources:

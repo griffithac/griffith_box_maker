@@ -1,0 +1,27 @@
+{
+  "name": "60° V-Bit 0.1mm",
+  "tool_type": "v_bit",
+  "material": "carbide",
+  "manufacturer": null,
+  "suitable_materials": [
+    "Plywood",
+    "MDF",
+    "Acrylic",
+    "Hardwood"
+  ],
+  "created_at": "2025-07-05T23:05:46-07:00",
+  "updated_at": "2025-07-05T23:05:46-07:00",
+  "properties": {
+    "diameter": 0.1,
+    "length": 20,
+    "shank_diameter": 3.175,
+    "flutes": 2,
+    "recommended_rpm": 20000,
+    "max_rpm": 25000,
+    "recommended_feed_rate": 600,
+    "recommended_plunge_rate": 200,
+    "max_depth_of_cut": 0.5,
+    "operation_type": "v_carving"
+  },
+  "notes": "Default cutting tool"
+}

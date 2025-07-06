@@ -1,0 +1,31 @@
+{
+  "name": "1/4 Carbide End Mill",
+  "tool_type": "end_mill",
+  "material": "carbide",
+  "manufacturer": "Generic",
+  "suitable_materials": [
+    "Plywood",
+    "MDF",
+    "Acrylic",
+    "Hardwood",
+    "Softwood",
+    "PETG"
+  ],
+  "created_at": "2025-01-15T10:30:00Z",
+  "updated_at": "2025-07-05T23:24:04-07:00",
+  "properties": {
+    "diameter": 6.35,
+    "length": 32,
+    "shank_diameter": 6.35,
+    "flutes": 2,
+    "recommended_rpm": 16000,
+    "max_rpm": 20000,
+    "recommended_feed_rate": 2000,
+    "recommended_plunge_rate": 500,
+    "max_depth_of_cut": 3.0,
+    "operation_type": "profiling",
+    "purchase_cost": 15.0,
+    "expected_life_hours": 20
+  },
+  "notes": "Standard 1/4 inch carbide end mill for general purpose cutting. Excellent for profiling and pocketing operations in wood and plastics."
+}

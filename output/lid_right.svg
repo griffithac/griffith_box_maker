@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="532.4" height="70.0" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(10, 10)">
+    <!-- Panel outline as cutting path -->
+    <rect x="0" y="0" width="512.4" height="50.0"
+          fill="none" stroke="black" stroke-width="1.0"/>
+
+    <!-- Finger joint cutting paths -->
+    
+  </g>
+</svg>
