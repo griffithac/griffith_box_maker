@@ -5,3 +5,4 @@ vendor/
 
 # Ignore output directory
 output/
+tmp_test_output/
