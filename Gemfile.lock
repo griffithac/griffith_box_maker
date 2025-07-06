@@ -5,6 +5,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     childprocess (5.1.0)
       logger (~> 1.5)
+    geometry (6.6)
     launchy (3.1.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
@@ -22,6 +23,8 @@ GEM
     public_suffix (6.0.2)
     racc (1.8.1)
     rake (13.3.0)
+    stl (0.2)
+      geometry
     svgcode (0.6.2)
       nokogiri (~> 1.8)
       thor (~> 0.20)
@@ -44,10 +47,12 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  geometry (~> 6.6)
   launchy (~> 3.1)
   minitest (~> 5.0)
   pastel (~> 0.8)
   rake (~> 13.0)
+  stl (~> 0.2)
   svgcode (~> 0.6)
   tty-prompt (~> 0.23)
   victor (~> 0.3)

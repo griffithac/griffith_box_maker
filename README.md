@@ -34,6 +34,12 @@ The interactive mode lets you configure dimensions, material stock, tools, joint
 ruby box_maker.rb --help
 ```
 
+Use `--stl` to also generate an assembled box as an STL file for 3‑D preview:
+
+```bash
+ruby box_maker.rb --length 200 --width 150 --height 80 --stl
+```
+
 Settings may also be saved and loaded as projects for later use.
 
 ## Examples

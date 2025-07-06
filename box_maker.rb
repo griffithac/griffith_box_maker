@@ -9,6 +9,7 @@ require_relative 'finger_joint_calculator'
 require_relative 'svg_generator'
 require_relative 'layout_optimizer'
 require_relative 'project_manager'
+require_relative 'stl_generator'
 
 # Try to load menu system
 begin
@@ -42,7 +43,8 @@ class BoxMaker
     output_dir: "./output",
     open_viewer: true,
     interactive: false,
-    generate_gcode: false
+    generate_gcode: false,
+    generate_stl: false
   }.freeze
 
   def initialize
@@ -155,6 +157,13 @@ class BoxMaker
       gcode_files = files.map { |f| convert_svg_to_gcode(f) }.compact
     end
 
+    stl_file = nil
+    if @options[:generate_stl]
+      puts "\n📦 Generating STL assembly..."
+      stl_gen = STLGenerator.new(@options)
+      stl_file = stl_gen.generate(File.join(@options[:output_dir], 'box_assembly.stl'))
+    end
+
     puts "\n✅ Generated files:"
     puts "  📋 Sheet Layouts:"
     layout_files.each { |file| puts "    📄 #{File.basename(file)}" }
@@ -164,10 +173,14 @@ class BoxMaker
       puts "  🛠️  G-code Files:"
       gcode_files.each { |f| puts "    💾 #{File.basename(f)}" }
     end
+    puts "  📦 STL File: #{File.basename(stl_file)}" if stl_file
 
     # Open with system viewer if requested (prioritize sheet layout)
     if @options[:open_viewer]
-      if layout_files && !layout_files.empty?
+      if stl_file
+        puts "\n👁️ Opening STL file with system viewer..."
+        open_with_viewer(stl_file)
+      elsif layout_files && !layout_files.empty?
         puts "\n👁️ Opening sheet layout with system viewer..."
         open_with_viewer(layout_files.first)
       elsif !files.empty?
@@ -296,6 +309,7 @@ class BoxMaker
       opts.on("--[no-]open", "Open with system viewer") { |v| @options[:open_viewer] = v }
       opts.on("-s", "--spacing SPACING", Float, "Part spacing (mm)") { |v| @options[:part_spacing] = v }
       opts.on("--[no-]gcode", "Generate G-code from SVG files") { |v| @options[:generate_gcode] = v }
+      opts.on("--[no-]stl", "Generate STL preview of assembled box") { |v| @options[:generate_stl] = v }
 
       opts.separator ""
       opts.on("--help", "Show this help") do
@@ -311,23 +325,26 @@ class BoxMaker
   end
 
   def open_with_viewer(file)
-    preview = File.join(File.dirname(file), "preview_#{File.basename(file, '.svg')}.html")
-    html = <<~HTML
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8" />
-        <title>SVG Preview</title>
-      </head>
-      <body style="margin:0">
-        <object type="image/svg+xml" data="#{File.basename(file)}" width="100%" height="100%"></object>
-      </body>
-      </html>
-    HTML
-    File.write(preview, html)
-
     require 'launchy'
-    Launchy.open(preview)
+    if File.extname(file).downcase == '.svg'
+      preview = File.join(File.dirname(file), "preview_#{File.basename(file, '.svg')}.html")
+      html = <<~HTML
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>SVG Preview</title>
+        </head>
+        <body style="margin:0">
+          <object type="image/svg+xml" data="#{File.basename(file)}" width="100%" height="100%"></object>
+        </body>
+        </html>
+      HTML
+      File.write(preview, html)
+      Launchy.open(preview)
+    else
+      Launchy.open(file)
+    end
   end
 
   def convert_svg_to_gcode(svg_file)
