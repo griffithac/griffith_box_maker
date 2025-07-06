@@ -328,16 +328,22 @@ class BoxMaker
 
     case RbConfig::CONFIG['host_os']
     when /darwin/
-      system('open', preview)
+      system('open', '-n', preview)
     when /linux/
       browser = ENV['BROWSER']
       if browser && !browser.empty?
-        system(browser, preview)
+        cmd = if browser =~ /(firefox|chrome|chromium|brave|edge)/i
+                 [browser, '--new-window', preview]
+               else
+                 [browser, preview]
+               end
+        system(*cmd)
       else
         system('xdg-open', preview)
       end
     when /mswin|mingw|cygwin/
-      system('start', preview)
+      system('start', '', preview)
+
     else
       puts 'Unable to open browser on this platform'
     end
