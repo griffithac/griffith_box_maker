@@ -311,15 +311,42 @@ class BoxMaker
   end
 
   def open_with_viewer(file)
+    preview = File.join(File.dirname(file), "preview_#{File.basename(file, '.svg')}.html")
+    html = <<~HTML
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>SVG Preview</title>
+      </head>
+      <body style="margin:0">
+        <object type="image/svg+xml" data="#{File.basename(file)}" width="100%" height="100%"></object>
+      </body>
+      </html>
+    HTML
+    File.write(preview, html)
+
     case RbConfig::CONFIG['host_os']
-      when /darwin/
-        system("open", file)
-      when /linux/
-        system("xdg-open", file)
-      when /mswin|mingw|cygwin/
-        system("start", file)
+    when /darwin/
+      # -n launches a new instance of the default browser
+      system('open', '-n', preview)
+    when /linux/
+      browser = ENV['BROWSER']
+      if browser && !browser.empty?
+        cmd = if browser =~ /(firefox|chrome|chromium|brave|edge)/i
+                 [browser, '--new-window', preview]
+               else
+                 [browser, preview]
+               end
+        system(*cmd)
       else
-        puts "Unable to open viewer on this platform"
+        system('xdg-open', preview)
+      end
+    when /mswin|mingw|cygwin/
+      # start will open the file with the associated browser in a new window
+      system('start', '', preview)
+    else
+      puts 'Unable to open browser on this platform'
     end
   end
 
