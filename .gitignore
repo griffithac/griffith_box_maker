@@ -5,3 +5,4 @@ vendor/
 
 # Ignore output directory
 output/
+test_fingers_output/

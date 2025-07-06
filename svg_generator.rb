@@ -222,18 +222,18 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - odd fingers get slots (to mate with bottom even fingers)
+    # Bottom edge - odd indices cut slots to receive bottom panel fingers
     (0...layout_x[:count]).each do |i|
       finger_start, finger_width = get_finger_info(i, layout_x)
 
       if i.odd?
-        # Odd finger - create slot
+        # Odd index - create slot going into the panel
         path << [:line_to, finger_start, y]
-        path << [:line_to, finger_start, y - @stock_thickness - @kerf]
-        path << [:line_to, finger_start + finger_width, y - @stock_thickness - @kerf]
+        path << [:line_to, finger_start, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start + finger_width, y + @stock_thickness + @kerf]
         path << [:line_to, finger_start + finger_width, y]
       else
-        # Even finger - straight line
+        # Even index - straight line
         path << [:line_to, finger_start + finger_width, y]
       end
     end
@@ -289,18 +289,18 @@ class SVGGenerator
     x, y = 0, 0
     path << [:move_to, x, y]
 
-    # Bottom edge - odd fingers get slots (to mate with bottom even fingers)
+    # Bottom edge - odd indices cut slots to receive bottom panel fingers
     (0...layout_y[:count]).each do |j|
       finger_start, finger_width = get_finger_info(j, layout_y)
 
       if j.odd?
-        # Odd finger - create slot
+        # Odd index - create slot going into the panel
         path << [:line_to, finger_start, y]
-        path << [:line_to, finger_start, y - @stock_thickness - @kerf]
-        path << [:line_to, finger_start + finger_width, y - @stock_thickness - @kerf]
+        path << [:line_to, finger_start, y + @stock_thickness + @kerf]
+        path << [:line_to, finger_start + finger_width, y + @stock_thickness + @kerf]
         path << [:line_to, finger_start + finger_width, y]
       else
-        # Even finger - straight line
+        # Even index - straight line
         path << [:line_to, finger_start + finger_width, y]
       end
     end
@@ -389,9 +389,18 @@ class SVGGenerator
   end
 
   def get_finger_info(index, layout)
-    uniform_width = layout[:span] / layout[:count]
-    start_pos = index * uniform_width
-    [start_pos, uniform_width]
+    width = layout[:width]
+    # Calculate start position based on uniform width.  For the last finger,
+    # force the end position to align exactly with the span to avoid small
+    # floating point drift which can create diagonal artifacts at the
+    # corners when the path is closed.
+    if index == layout[:count] - 1
+      start_pos = layout[:span] - width
+    else
+      start_pos = index * width
+    end
+
+    [start_pos.round(4), width.round(4)]
   end
 
   def draw_cutting_path(img, path, margin)
