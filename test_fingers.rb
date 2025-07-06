@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative 'finger_joint_calculator'
-require_relative 'svg_generator'
+require_relative 'svg_generator_new'
 
 # Test finger joint calculations with simple dimensions
 puts "🔍 Testing Finger Joint Calculations"
@@ -84,7 +84,7 @@ begin
 
   # Generate just the box bottom for testing
   puts "Generating box_bottom.svg..."
-  files = [generator.send(:generate_panel_by_type, "box_bottom")]
+  files = [generator.send(:generate_panel, "box_bottom")]
 
   puts "✅ Generated test SVG files:"
   files.each { |file| puts "  📄 #{File.basename(file)}" }

@@ -37,23 +37,25 @@ class MenuSystem
       clear_screen
       show_current_config
 
-      puts @pastel.dim("Navigation: ↑↓ arrows, letter keys, or ENTER to select")
+      puts @pastel.dim("Navigation: type a letter then ENTER")
       puts
 
-      choice = @prompt.select("#{@pastel.bold('Main Menu:')} What would you like to do?", per_page: 20) do |menu|
-        menu.choice "📏 (D)imensions - Configure box size", :dimensions
-        menu.choice "📦 (M)aterial - Stock materials", :stock
-        menu.choice "🔧 (T)ools - Cutting tools", :tools
-        menu.choice "🤝 (J)oints - Finger width, dogbones", :joints
-        menu.choice "🎯 (F)eatures - Lid and dividers", :features
-        menu.choice "📁 (O)utput - Directory and viewer", :output
-        menu.choice "📋 (P)resets - Load common configurations", :presets
-        menu.choice "📐 (L)ayout - Preview stock layout", :layout_preview
-        menu.choice "💼 (R)ojects - Project management", :projects
-        menu.choice "🚀 (G)enerate - Create SVG files", :generate
-        menu.choice "💾 (S)ave - Save current config", :save
-        menu.choice "❌ (Q)uit", :exit
-      end
+      main_choices = [
+        {key: 'd', name: "📏 Dimensions - Configure box size", value: :dimensions},
+        {key: 'm', name: "📦 Material - Stock materials", value: :stock},
+        {key: 't', name: "🔧 Tools - Cutting tools", value: :tools},
+        {key: 'j', name: "🤝 Joints - Finger width, dogbones", value: :joints},
+        {key: 'f', name: "🎯 Features - Lid and dividers", value: :features},
+        {key: 'o', name: "📁 Output - Directory and viewer", value: :output},
+        {key: 'p', name: "📋 Presets - Load common configurations", value: :presets},
+        {key: 'l', name: "📐 Layout - Preview stock layout", value: :layout_preview},
+        {key: 'r', name: "💼 Projects - Project management", value: :projects},
+        {key: 'g', name: "🚀 Generate - Create SVG files", value: :generate},
+        {key: 's', name: "💾 Save - Save current config", value: :save},
+        {key: 'q', name: "❌ Quit", value: :exit}
+      ]
+
+      choice = @prompt.expand("#{@pastel.bold('Main Menu:')} What would you like to do?", main_choices)
 
       case choice
       when :dimensions
@@ -131,13 +133,14 @@ class MenuSystem
   def configure_dimensions
     puts @pastel.bold.cyan("\n📏 Box Dimensions Configuration")
 
-    choice = @prompt.select("Which dimension to configure?", per_page: 15) do |menu|
-      menu.choice "(L)ength: #{@options[:box_length]}mm", :length
-      menu.choice "(W)idth: #{@options[:box_width]}mm", :width
-      menu.choice "(H)eight: #{@options[:box_height]}mm", :height
-      menu.choice "(A)ll dimensions", :all
-      menu.choice "(R)eturn to Main Menu", :return
-    end
+    dim_choices = [
+      {key: 'l', name: "Length: #{@options[:box_length]}mm", value: :length},
+      {key: 'w', name: "Width: #{@options[:box_width]}mm", value: :width},
+      {key: 'h', name: "Height: #{@options[:box_height]}mm", value: :height},
+      {key: 'a', name: "All dimensions", value: :all},
+      {key: 'r', name: "Return to Main Menu", value: :return}
+    ]
+    choice = @prompt.expand("Which dimension to configure?", dim_choices)
 
     case choice
     when :length
@@ -170,12 +173,13 @@ class MenuSystem
   def configure_joints
     puts @pastel.bold.green("\n🤝 Joint Settings Configuration")
 
-    choice = @prompt.select("Which joint setting to configure?", per_page: 15) do |menu|
-      menu.choice "(F)inger Width: #{@options[:finger_width]}mm", :finger_width
-      menu.choice "(D)ogbone Style: #{dogbone_description}", :dogbone
-      menu.choice "(B)oth settings", :both
-      menu.choice "(R)eturn to Main Menu", :return
-    end
+    joint_choices = [
+      {key: 'f', name: "Finger Width: #{@options[:finger_width]}mm", value: :finger_width},
+      {key: 'd', name: "Dogbone Style: #{dogbone_description}", value: :dogbone},
+      {key: 'b', name: "Both settings", value: :both},
+      {key: 'r', name: "Return to Main Menu", value: :return}
+    ]
+    choice = @prompt.expand("Which joint setting to configure?", joint_choices)
 
     case choice
     when :finger_width
@@ -195,25 +199,26 @@ class MenuSystem
   end
 
   def configure_dogbone_style
-    dogbone_choice = @prompt.select("Dogbone Relief Style:", per_page: 15) do |menu|
-      menu.choice "(N)one", 0
-      menu.choice "(L)ong Side", 1
-      menu.choice "(T)-Bone", 2
-      menu.choice "(F)illets 45° (Recommended)", 3
-      menu.default dogbone_choice_index
-    end
+    dogbone_choices = [
+      {key: 'n', name: 'None', value: 0},
+      {key: 'l', name: 'Long Side', value: 1},
+      {key: 't', name: 'T-Bone', value: 2},
+      {key: 'f', name: 'Fillets 45° (Recommended)', value: 3}
+    ]
+    dogbone_choice = @prompt.expand('Dogbone Relief Style:', dogbone_choices, default: dogbone_choice_index)
     @options[:dogbone_style] = dogbone_choice
   end
 
   def configure_features
     puts @pastel.bold.magenta("\n🎯 Box Features Configuration")
 
-    choice = @prompt.select("Configure which features?", per_page: 15) do |menu|
-      menu.choice "🎩 (L)id Options", :lid
-      menu.choice "📦 (D)ivider Options", :dividers
-      menu.choice "⚙️ (B)oth Lid and Dividers", :both
-      menu.choice "🔙 (R)eturn to Main Menu", :return
-    end
+    feature_choices = [
+      {key: 'l', name: '🎩 Lid Options', value: :lid},
+      {key: 'd', name: '📦 Divider Options', value: :dividers},
+      {key: 'b', name: '⚙️ Both Lid and Dividers', value: :both},
+      {key: 'r', name: '🔙 Return to Main Menu', value: :return}
+    ]
+    choice = @prompt.expand('Configure which features?', feature_choices)
 
     case choice
     when :lid
@@ -261,12 +266,13 @@ class MenuSystem
   def configure_output
     puts @pastel.bold.white("\n📁 Output Configuration")
 
-    choice = @prompt.select("Which output setting to configure?", per_page: 15) do |menu|
-      menu.choice "(D)irectory: #{@options[:output_dir]}", :directory
-      menu.choice "(V)iewer: #{@options[:open_viewer] ? 'Auto-open' : 'Manual'}", :viewer
-      menu.choice "(B)oth settings", :both
-      menu.choice "(R)eturn to Main Menu", :return
-    end
+    out_choices = [
+      {key: 'd', name: "Directory: #{@options[:output_dir]}", value: :directory},
+      {key: 'v', name: "Viewer: #{@options[:open_viewer] ? 'Auto-open' : 'Manual'}", value: :viewer},
+      {key: 'b', name: 'Both settings', value: :both},
+      {key: 'r', name: 'Return to Main Menu', value: :return}
+    ]
+    choice = @prompt.expand('Which output setting to configure?', out_choices)
 
     case choice
     when :directory
@@ -315,15 +321,16 @@ class MenuSystem
       }
     }
 
-    choice = @prompt.select("Select a preset:", per_page: 15) do |menu|
-      menu.choice "(S)mall Parts Organizer - 150×100×50mm, no lid", "Small Parts Organizer"
-      menu.choice "(T)ool Box - 300×200×100mm, with lid", "Tool Box"
-      menu.choice "(E)lectronics Enclosure - 120×80×40mm, 3mm material", "Electronics Enclosure"
-      menu.choice "(W)orkshop Storage - 400×300×120mm, with dividers", "Workshop Storage"
-      menu.choice "(J)ewelry Box - 180×120×40mm, fine tolerances", "Jewelry Box"
-      menu.choice "(D)ocument Box - 350×250×80mm, with lid", "Document Box"
-      menu.choice "(C)ancel", :cancel
-    end
+    preset_choices = [
+      {key: 's', name: 'Small Parts Organizer - 150×100×50mm, no lid', value: 'Small Parts Organizer'},
+      {key: 't', name: 'Tool Box - 300×200×100mm, with lid', value: 'Tool Box'},
+      {key: 'e', name: 'Electronics Enclosure - 120×80×40mm, 3mm material', value: 'Electronics Enclosure'},
+      {key: 'w', name: 'Workshop Storage - 400×300×120mm, with dividers', value: 'Workshop Storage'},
+      {key: 'j', name: 'Jewelry Box - 180×120×40mm, fine tolerances', value: 'Jewelry Box'},
+      {key: 'd', name: 'Document Box - 350×250×80mm, with lid', value: 'Document Box'},
+      {key: 'c', name: 'Cancel', value: :cancel}
+    ]
+    choice = @prompt.expand('Select a preset:', preset_choices)
 
     return if choice == :cancel
 
@@ -399,14 +406,15 @@ class MenuSystem
       puts "  Total Area: #{(@options[:stock_width] * @options[:stock_height] / 1000000.0).round(2)} m²"
       puts
 
-      choice = @prompt.select("What would you like to do?") do |menu|
-        menu.choice "📏 (W)idth: #{@options[:stock_width]}mm", :width, key: "w"
-        menu.choice "📏 (H)eight: #{@options[:stock_height]}mm", :height, key: "h"
-        menu.choice "📏 (T)hickness: #{@options[:stock_thickness]}mm", :thickness, key: "t"
-        menu.choice "📋 (P)resets - Common stock sizes", :presets, key: "p"
-        menu.choice "🔄 (A)ll dimensions", :all, key: "a"
-        menu.choice "🔙 (R)eturn to Material Menu", :return, key: "r"
-      end
+      stock_choices = [
+        {key: 'w', name: "📏 Width: #{@options[:stock_width]}mm", value: :width},
+        {key: 'h', name: "📏 Height: #{@options[:stock_height]}mm", value: :height},
+        {key: 't', name: "📏 Thickness: #{@options[:stock_thickness]}mm", value: :thickness},
+        {key: 'p', name: "📋 Presets - Common stock sizes", value: :presets},
+        {key: 'a', name: "🔄 All dimensions", value: :all},
+        {key: 'r', name: "🔙 Return to Material Menu", value: :return}
+      ]
+      choice = @prompt.expand("What would you like to do?", stock_choices)
 
       case choice
       when :width
@@ -440,15 +448,16 @@ class MenuSystem
         "A4 Size (210×297mm)" => { stock_width: 210, stock_height: 297, stock_thickness: 3 }
       }
 
-      choice = @prompt.select("Select a stock size preset:") do |menu|
-        menu.choice "🏠 (1) 4x8 Plywood - 1220×2440×12mm", "4x8 Plywood (1220×2440mm)", key: "1"
-        menu.choice "📦 (2) 4x4 Plywood - 1220×1220×12mm", "4x4 Plywood (1220×1220mm)", key: "2"
-        menu.choice "🔧 (3) 3x3 MDF - 900×900×6mm", "3x3 MDF (900×900mm)", key: "3"
-        menu.choice "💎 (4) A1 Acrylic - 594×841×3mm", "A1 Acrylic (594×841mm)", key: "4"
-        menu.choice "📄 (5) Letter Size - 216×279×3mm", "Letter Size (216×279mm)", key: "5"
-        menu.choice "📄 (6) A4 Size - 210×297×3mm", "A4 Size (210×297mm)", key: "6"
-        menu.choice "❌ (C)ancel", :cancel, key: "c"
-      end
+      preset_choices = [
+        {key: '1', name: '🏠 4x8 Plywood - 1220×2440×12mm', value: '4x8 Plywood (1220×2440mm)'},
+        {key: '2', name: '📦 4x4 Plywood - 1220×1220×12mm', value: '4x4 Plywood (1220×1220mm)'},
+        {key: '3', name: '🔧 3x3 MDF - 900×900×6mm', value: '3x3 MDF (900×900mm)'},
+        {key: '4', name: '💎 A1 Acrylic - 594×841×3mm', value: 'A1 Acrylic (594×841mm)'},
+        {key: '5', name: '📄 Letter Size - 216×279×3mm', value: 'Letter Size (216×279mm)'},
+        {key: '6', name: '📄 A4 Size - 210×297×3mm', value: 'A4 Size (210×297mm)'},
+        {key: 'c', name: '❌ Cancel', value: :cancel}
+      ]
+      choice = @prompt.expand('Select a stock size preset:', preset_choices)
 
       return if choice == :cancel
 
@@ -524,11 +533,12 @@ class MenuSystem
       optimizer.suggest_optimizations(layout)
 
       puts
-      choice = @prompt.select("What would you like to do?", per_page: 15) do |menu|
-        menu.choice "📄 (G)enerate layout SVG files", :generate_layout
-        menu.choice "👁️ (V)iew layout (if SVG exists)", :view_layout
-        menu.choice "🔙 (R)eturn to Main Menu", :return
-      end
+      layout_choices = [
+        {key: 'g', name: '📄 Generate layout SVG files', value: :generate_layout},
+        {key: 'v', name: '👁️ View layout (if SVG exists)', value: :view_layout},
+        {key: 'r', name: '🔙 Return to Main Menu', value: :return}
+      ]
+      choice = @prompt.expand('What would you like to do?', layout_choices)
 
       case choice
       when :generate_layout
