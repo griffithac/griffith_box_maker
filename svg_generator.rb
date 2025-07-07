@@ -245,7 +245,6 @@ class SVGGenerator
     (0...layout_z[:count]).each do |k|
       finger_start, finger_width = get_finger_info(k, layout_z)
       finger_end = finger_start + finger_width
-      finger_end = finger_start + finger_width
 
       if k.odd?
         # Odd finger - create outward tab
@@ -305,7 +304,7 @@ class SVGGenerator
         path << [:line_to, finger_end, y + @stock_thickness + @kerf]
         path << [:line_to, finger_end, y]
       else
-        # Even index - straight line
+        # Odd index - straight line
         path << [:line_to, finger_end, y]
       end
     end

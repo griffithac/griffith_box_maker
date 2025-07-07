@@ -9,7 +9,6 @@ require_relative 'finger_joint_calculator'
 require_relative 'svg_generator'
 require_relative 'layout_optimizer'
 require_relative 'project_manager'
-require_relative 'stl_generator'
 
 # Try to load menu system
 begin
@@ -160,8 +159,13 @@ class BoxMaker
     stl_file = nil
     if @options[:generate_stl]
       puts "\n📦 Generating STL assembly..."
-      stl_gen = STLGenerator.new(@options)
-      stl_file = stl_gen.generate(File.join(@options[:output_dir], 'box_assembly.stl'))
+      begin
+        require_relative 'stl_generator'
+        stl_gen = STLGenerator.new(@options)
+        stl_file = stl_gen.generate(File.join(@options[:output_dir], 'box_assembly.stl'))
+      rescue LoadError => e
+        puts "⚠️  STL generation skipped: #{e.message}"
+      end
     end
 
     puts "\n✅ Generated files:"
