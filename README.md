@@ -16,8 +16,8 @@ bundle install
 Generate a simple box directly from the command line:
 
 ```bash
-ruby box_maker.rb --length 200 --width 150 --height 80 \
-  --finger-width 25 --output ./output --no-open
+ruby box_maker.rb --length 100 --width 80 --height 40 
+  --finger-width 15 --output ./output --no-open
 ```
 
 Run with no arguments (or `--interactive`) to launch the menu driven interface:
@@ -37,7 +37,7 @@ ruby box_maker.rb --help
 Use `--stl` to also generate an assembled box as an STL file for 3‑D preview:
 
 ```bash
-ruby box_maker.rb --length 200 --width 150 --height 80 --stl
+ruby box_maker.rb --length 100 --width 80 --height 40 --stl
 ```
 
 Settings may also be saved and loaded as projects for later use.

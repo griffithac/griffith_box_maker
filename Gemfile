@@ -8,6 +8,7 @@ gem "pastel", "~> 0.8"
 gem "svgcode", "~> 0.6"
 gem "stl", "~> 0.2"
 gem "geometry", "~> 6.6"
+gem "matrix"
 
 group :development do
   gem "rake", "~> 13.0"
