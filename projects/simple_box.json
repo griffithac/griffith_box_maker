@@ -1,0 +1,29 @@
+{
+  "name": "simple_box",
+  "created_at": "2025-07-08T00:00:00Z",
+  "updated_at": "2025-07-08T00:00:00Z",
+  "version": "1.0",
+  "description": "100×80×40mm test box",
+  "configuration": {
+    "box_length": 100,
+    "box_width": 80,
+    "box_height": 40,
+    "stock_thickness": 6,
+    "stock_width": 300,
+    "stock_height": 300,
+    "finger_width": 15,
+    "bit_diameter": 3.175,
+    "kerf": 0.2,
+    "lid_height": 20,
+    "lid_tolerance": 0.5,
+    "part_spacing": 10,
+    "dogbone_style": 3,
+    "enable_lid": false,
+    "enable_dividers": false,
+    "enable_x_divider": true,
+    "enable_y_divider": true,
+    "output_dir": "./output",
+    "open_viewer": true,
+    "interactive": true
+  }
+}

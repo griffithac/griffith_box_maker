@@ -22,18 +22,18 @@ class BoxMaker
 
   # Default parameters from OpenSCAD file
     DEFAULT_OPTIONS = {
-    box_length: 278,
-    box_width: 498,
-    box_height: 73,
-    stock_thickness: 5.2,
-    stock_width: 1220,    # Stock sheet width in mm
-    stock_height: 1220,    # Stock sheet height in mm
-    finger_width: 40,
+    box_length: 100,
+    box_width: 80,
+    box_height: 40,
+    stock_thickness: 6,
+    stock_width: 300,    # Stock sheet width in mm
+    stock_height: 300,    # Stock sheet height in mm
+    finger_width: 15,
     bit_diameter: 3.175,
-    kerf: 0.3,
-    lid_height: 40,
-    lid_tolerance: 1,
-    part_spacing: 20,
+    kerf: 0.2,
+    lid_height: 20,
+    lid_tolerance: 0.5,
+    part_spacing: 10,
     dogbone_style: 3,
     enable_lid: false,
     enable_dividers: false,
