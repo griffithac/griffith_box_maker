@@ -282,23 +282,14 @@ class LayoutOptimizer
 
       # Draw finger joints on the panel
       begin
-        base_name = panel[:name].sub(/_\d+$/, '')
-
-        original_width  = panel[:rotated] ? panel[:height] : panel[:width]
-        original_height = panel[:rotated] ? panel[:width]  : panel[:height]
-
-        cutting_path = generator.send(:generate_cutting_path, base_name, original_width, original_height)
+        oriented_path = build_panel_vectors(panel, generator)
 
         svg_path = ""
-        cutting_path.each do |cmd|
+        oriented_path.each do |cmd|
           case cmd[0]
           when :move_to, :line_to
-            x, y = cmd[1], cmd[2]
-            if panel[:rotated]
-              x, y = y, original_width - x
-            end
-            x += panel[:x] + margin
-            y += panel[:y] + margin
+            x = cmd[1] + panel[:x] + margin
+            y = cmd[2] + panel[:y] + margin
             svg_path += (cmd[0] == :move_to ? "M" : "L") + " #{x.round(3)} #{y.round(3)} "
           when :close
             svg_path += "Z "
@@ -399,6 +390,28 @@ class LayoutOptimizer
 
     File.write(filename, img.render)
     filename
+  end
+
+  def build_panel_vectors(panel, generator)
+    base_name = panel[:name].sub(/_\d+$/, '')
+
+    original_width  = panel[:rotated] ? panel[:height] : panel[:width]
+    original_height = panel[:rotated] ? panel[:width]  : panel[:height]
+
+    path = generator.send(:generate_cutting_path, base_name, original_width, original_height)
+
+    path.map do |cmd|
+      case cmd[0]
+      when :move_to, :line_to
+        x, y = cmd[1], cmd[2]
+        if panel[:rotated]
+          x, y = y, original_width - x
+        end
+        [cmd[0], x, y]
+      else
+        [cmd[0]]
+      end
+    end
   end
 
 
