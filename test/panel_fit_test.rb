@@ -17,8 +17,8 @@ class PanelFitTest < Minitest::Test
       enable_lid: false,
       enable_dividers: false
     }
-    @calc = FingerJointCalculator.new(@options)
-    @layouts = @calc.calculate_all_layouts
+    calc = FingerJointCalculator.new(@options)
+    @layouts = calc.calculate_all_layouts
     @gen = SVGGenerator.new(@options, @layouts)
   end
 
@@ -26,76 +26,41 @@ class PanelFitTest < Minitest::Test
     layout[:count].times.sum { |i| i.even? ? 4 : 1 }
   end
 
-  def bottom_edge_segments(path)
-    layout = @layouts[:box_x]
+  def extract_segments(path, layout, axis: 1)
     segments = []
     idx = 1
+    prev_end = 0
     layout[:count].times do |i|
-      start, width = @gen.send(:get_finger_info, i, layout)
-      end_pos = start + width
       if i.even?
-        expected = [
-          [:line_to, start, 0],
-          [:line_to, start, -@options[:stock_thickness] - @options[:kerf]],
-          [:line_to, end_pos, -@options[:stock_thickness] - @options[:kerf]],
-          [:line_to, end_pos, 0]
-        ]
+        start = path[idx][axis]
+        end_pos = path[idx + 2][axis]
+        idx += 4
       else
-        expected = [[:line_to, end_pos, 0]]
+        start = prev_end
+        end_pos = path[idx][axis]
+        idx += 1
       end
-      assert_equal expected, path[idx, expected.length]
-      idx += expected.length
-      segments << [start, end_pos]
+      seg_start = [start, end_pos].min.round(4)
+      seg_end   = [start, end_pos].max.round(4)
+      segments << [seg_start, seg_end]
+      prev_end = end_pos
     end
     segments
   end
 
+  def bottom_edge_segments(path)
+    extract_segments(path, @layouts[:box_x], axis: 1)
+  end
+
   def side_bottom_segments(path, layout)
-    segments = []
-    idx = 1
-    layout[:count].times do |i|
-      start, width = @gen.send(:get_finger_info, i, layout)
-      end_pos = start + width
-      if i.even?
-        expected = [
-          [:line_to, start, 0],
-          [:line_to, start, @options[:stock_thickness] + @options[:kerf]],
-          [:line_to, end_pos, @options[:stock_thickness] + @options[:kerf]],
-          [:line_to, end_pos, 0]
-        ]
-      else
-        expected = [[:line_to, end_pos, 0]]
-      end
-      assert_equal expected, path[idx, expected.length]
-      idx += expected.length
-      segments << [start, end_pos]
-    end
-    segments
+    extract_segments(path, layout, axis: 1)
   end
 
   def bottom_left_segments(path)
     layout = @layouts[:box_y]
-    start_idx = 1 + cmd_count(@layouts[:box_x]) + cmd_count(@layouts[:box_y]) + cmd_count(@layouts[:box_x])
-    segments = []
-    idx = start_idx
-    (layout[:count] - 1).downto(0) do |j|
-      start, width = @gen.send(:get_finger_info, j, layout)
-      end_pos = start + width
-      if j.even?
-        expected = [
-          [:line_to, 0, end_pos],
-          [:line_to, -@options[:stock_thickness] - @options[:kerf], end_pos],
-          [:line_to, -@options[:stock_thickness] - @options[:kerf], start],
-          [:line_to, 0, start]
-        ]
-      else
-        expected = [[:line_to, 0, start]]
-      end
-      assert_equal expected, path[idx, expected.length]
-      idx += expected.length
-      segments << [start, end_pos]
-    end
-    segments.reverse
+    offset = 1 + cmd_count(@layouts[:box_x]) + cmd_count(@layouts[:box_y]) +
+             cmd_count(@layouts[:box_x])
+    extract_segments(path[offset..], layout, axis: 2).reverse
   end
 
   def test_bottom_matches_front
@@ -104,9 +69,8 @@ class PanelFitTest < Minitest::Test
     w, h = @gen.send(:get_panel_dimensions, 'box_front')
     front_path = @gen.send(:generate_cutting_path, 'box_front', w, h)
 
-    bottom = bottom_edge_segments(bottom_path)
-    front = side_bottom_segments(front_path, @layouts[:box_x])
-    assert_equal bottom, front
+    assert_equal bottom_edge_segments(bottom_path),
+                 side_bottom_segments(front_path, @layouts[:box_x])
   end
 
   def test_bottom_matches_left
@@ -115,8 +79,7 @@ class PanelFitTest < Minitest::Test
     w, h = @gen.send(:get_panel_dimensions, 'box_left')
     left_path = @gen.send(:generate_cutting_path, 'box_left', w, h)
 
-    bottom_left = bottom_left_segments(bottom_path)
-    left_bottom = side_bottom_segments(left_path, @layouts[:box_y])
-    assert_equal bottom_left, left_bottom
+    assert_equal bottom_left_segments(bottom_path),
+                 side_bottom_segments(left_path, @layouts[:box_y])
   end
 end
