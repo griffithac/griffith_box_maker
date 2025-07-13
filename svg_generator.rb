@@ -280,6 +280,20 @@ class SVGGenerator
     end
 
     path << [:close]
+
+    if @options[:enable_dividers] && @options[:enable_y_divider]
+      slot_w = @stock_thickness + @kerf
+      slot_h = height / 2.0
+      x0 = width / 2.0 - slot_w / 2.0
+      y0 = height / 2.0 - slot_h / 2.0
+
+      path << [:move_to, x0, y0]
+      path << [:line_to, x0 + slot_w, y0]
+      path << [:line_to, x0 + slot_w, y0 + slot_h]
+      path << [:line_to, x0, y0 + slot_h]
+      path << [:close]
+    end
+
     path
   end
 
@@ -349,6 +363,20 @@ class SVGGenerator
     end
 
     path << [:close]
+
+    if @options[:enable_dividers] && @options[:enable_x_divider]
+      slot_w = @stock_thickness + @kerf
+      slot_h = height / 2.0
+      x0 = width / 2.0 - slot_w / 2.0
+      y0 = height / 2.0 - slot_h / 2.0
+
+      path << [:move_to, x0, y0]
+      path << [:line_to, x0 + slot_w, y0]
+      path << [:line_to, x0 + slot_w, y0 + slot_h]
+      path << [:line_to, x0, y0 + slot_h]
+      path << [:close]
+    end
+
     path
   end
 
@@ -374,11 +402,41 @@ class SVGGenerator
   end
 
   def generate_x_divider_path(width, height)
-    generate_simple_rectangle_path(width, height)
+    path = generate_simple_rectangle_path(width, height)
+
+    if @options[:enable_dividers] && @options[:enable_y_divider]
+      slot_w = @stock_thickness + @kerf
+      slot_h = height / 2.0
+      x0 = width / 2.0 - slot_w / 2.0
+      y0 = height / 2.0 - slot_h / 2.0
+
+      path << [:move_to, x0, y0]
+      path << [:line_to, x0 + slot_w, y0]
+      path << [:line_to, x0 + slot_w, y0 + slot_h]
+      path << [:line_to, x0, y0 + slot_h]
+      path << [:close]
+    end
+
+    path
   end
 
   def generate_y_divider_path(width, height)
-    generate_simple_rectangle_path(width, height)
+    path = generate_simple_rectangle_path(width, height)
+
+    if @options[:enable_dividers] && @options[:enable_x_divider]
+      slot_w = @stock_thickness + @kerf
+      slot_h = height / 2.0
+      x0 = width / 2.0 - slot_w / 2.0
+      y0 = height / 2.0 - slot_h / 2.0
+
+      path << [:move_to, x0, y0]
+      path << [:line_to, x0 + slot_w, y0]
+      path << [:line_to, x0 + slot_w, y0 + slot_h]
+      path << [:line_to, x0, y0 + slot_h]
+      path << [:close]
+    end
+
+    path
   end
 
   def generate_simple_rectangle_path(width, height)
@@ -433,55 +491,68 @@ class SVGGenerator
   end
 
   def add_dogbones_to_path(img, path, margin)
-    # Find inside corners in the path and add dogbone circles
-    # This is a simplified implementation - can be enhanced
+    return if path.empty?
+
     offset_45 = @bit_radius * 0.707
+    orientation = polygon_orientation(path)
 
-    # For now, just add dogbones at strategic points
-    # This would need more sophisticated corner detection
     path.each_with_index do |command, i|
-      if command[0] == :line_to && i > 0
-        x, y = command[1] + margin, command[2] + margin
+      next unless command[0] == :line_to && i.positive?
 
-        # Add a small dogbone circle at this point if it's an inside corner
-        # (This is a placeholder - real implementation would need corner detection)
-        if should_add_dogbone(path, i)
-          img.circle cx: x + offset_45, cy: y + offset_45, r: @bit_radius,
-                     fill: "none",
-                     stroke: "red",
-                     "stroke-width" => "0.3"
-        end
+      if should_add_dogbone(path, i, orientation)
+        x, y = command[1] + margin, command[2] + margin
+        img.circle cx: x + offset_45, cy: y + offset_45, r: @bit_radius,
+                   fill: "none",
+                   stroke: "red",
+                   "stroke-width" => "0.3"
       end
     end
   end
 
-  def should_add_dogbone(path, index)
-    # Determine if the vertex at `index` forms an internal (concave) corner.
+  def polygon_orientation(path)
+    points = []
+    start_point = nil
+    path.each do |cmd|
+      case cmd[0]
+      when :move_to
+        start_point = [cmd[1], cmd[2]]
+        points << start_point
+      when :line_to
+        points << [cmd[1], cmd[2]]
+      when :close
+        points << start_point if start_point
+      end
+    end
+
+    area = 0.0
+    points.each_cons(2) do |(x1, y1), (x2, y2)|
+      area += x1 * y2 - x2 * y1
+    end
+
+    area >= 0 ? 1 : -1
+  end
+
+  def should_add_dogbone(path, index, orientation)
     first_move = path.find { |cmd| cmd[0] == :move_to }
     return false unless first_move
     start_point = [first_move[1], first_move[2]]
 
-    # Helper to resolve a point from a command
     get_point = lambda do |cmd|
       case cmd[0]
       when :move_to, :line_to
         [cmd[1], cmd[2]]
       when :close
         start_point
-      else
-        nil
       end
     end
 
     current = get_point.call(path[index])
     return false unless current
 
-    # Find previous drawing command
     prev_idx = index - 1
     prev_idx -= 1 while prev_idx > 0 && path[prev_idx][0] == :close
     previous = prev_idx >= 0 ? get_point.call(path[prev_idx]) : start_point
 
-    # Find next drawing command
     next_idx = index + 1
     next_idx += 1 while next_idx < path.length && path[next_idx][0] == :close
     nxt = next_idx < path.length ? get_point.call(path[next_idx]) : start_point
@@ -493,7 +564,7 @@ class SVGGenerator
     v2y = nxt[1] - current[1]
 
     cross = v1x * v2y - v1y * v2x
-    cross < -0.001
+    orientation.positive? ? cross < -0.001 : cross > 0.001
   end
 
   def lid_length
